@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week Project — Settimana III</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <!-- Titolo dell'app + sottotitolo + button tema chiaro/scuro -->
+        <div>
+            <h1>I miei vinili</h1>
+            <p>Lista di vinili che ho o che vorrei comprare</p>
+        </div>
+        <button id="dark">Tema scuro</button>
+
+    </header>
+
+    <main class="container">
+
+        <section class="form">
+            <!-- Form di inserimento di nuovi elementi -->
+             <h2>Aggiungi un vinile</h2>
+            <form>
+                <input type="text" id="titolo"placeholder="Album">
+                <input type="text" id="autore" placeholder="Artista">
+                <input type="number" id ="anno" placeholder="Anno">
+                <select id="stato">
+                    <option>Da leggere</option>
+                    <option>Letto</option>
+                </select>
+
+                <button id="addButton">Aggiungi</button>
+            </form>
+        </section>
+
+        <section class="controlli">
+            <!-- Ricerca live, filtro (select), ordinamento -->
+        </section>
+
+        <section class="statistiche">
+            <!-- Conteggi e/o barre orizzontali -->
+        </section>
+
+        <section class="lista">
+            <!-- Container che render() ricostruisce a ogni cambio di stato -->
+        </section>
+
+        <div id="notifica"></div>
+
+    </main>
+
+    <footer>
+        <!-- Autore, anno -->
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+</body>
+
+</html>
