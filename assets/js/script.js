@@ -21,22 +21,24 @@ REGOLE
 */
 
 /* SCRIVI QUI LA TUA RISPOSTA */
-const form = document.querySelector('.form')
-const controlli = document.querySelector('.controlli')
+const form = document.querySelector('#viniliForm')
 const statistiche = document.querySelector('.statistiche')
 const lista = document.querySelector('.lista')
 const dark = document.querySelector('#dark')
+const search = document.querySelector('#search');
+const filter = document.querySelector('#filter');
+const sort = document.querySelector('#sort');
 
 let vinili = [
     {
-        id:1,
+        id: 1,
         album: "Thriller",
         artista: "Michael Jackson",
         anno: 1982,
         stato: "Acquistato",
     },
     {
-        id:2,
+        id: 2,
         album: "Hybrid Theory",
         artista: "Linkin park",
         anno: 2000,
@@ -44,16 +46,16 @@ let vinili = [
 
     },
     {
-        id:3,
+        id: 3,
         album: "The Dark Side of the Moon",
         artista: "Pink Floyd",
         anno: 1973,
-        stato:"Da acquistare",
+        stato: "Da acquistare",
     }
-] ;
-let filtroCorrente = "Tutti" ;
-let ordinamentoCorrente = "titolo" ;
-let ricercaCorrente = "" ;
+];
+let filtroCorrente = "Tutti";
+let ordinamentoCorrente = "titolo";
+let ricercaCorrente = "";
 
 /* RENDER()
    Una sola funzione che ridipinge la lista. A ogni chiamata:
@@ -69,28 +71,103 @@ let ricercaCorrente = "" ;
 /* SCRIVI QUI LA TUA RISPOSTA */
 const render = () => {
     let listaFiltrata = [...vinili]; //mi copio la lista originale con spread per lavorarci senza modificarla
-    lista.innerHTML="";
+
+    //FILTRO
+    if (filtroCorrente !== "Tutti") {
+        listaFiltrata = listaFiltrata.filter(
+            (v) => v.stato === filtroCorrente
+        );
+    }
+
+    //RICERCA
+    if (ricercaCorrente !== "") {
+        listaFiltrata = listaFiltrata.filter((v) =>
+            v.album.toLowerCase().includes(ricercaCorrente.toLowerCase()) ||
+            v.artista.toLowerCase().includes(ricercaCorrente.toLowerCase())
+        );
+    }
+    //ORDINAMENTO
+    if (ordinamentoCorrente === "anno") {
+        listaFiltrata.sort((a, b) => a.anno - b.anno);
+    } else {
+        listaFiltrata.sort((a, b) =>
+            a.album.localeCompare(b.album)
+        );
+    }
+    lista.innerHTML = "";
+
+    //Creazione delle card
     listaFiltrata.forEach((vinile) => {
         const card = document.createElement("div");
         card.classList.add("card");
-        if (vinile.stato==="letto") {
-            card.style.borderLeftColor="green";
+        if (vinile.stato === "Acquistato") {
+            card.style.borderLeftColor = "green";
         } else {
-            card.style.borderLeftColor="gold";
+            card.style.borderLeftColor = "gold";
         }
-        card.innerHTML=`<div class ="prodotto">
-        <h3>${vinile.album}</h3>
-        <p>${vinile.artista}-${vinile.anno}</p>
-        </div>
-        <div class="status">
-        <span class="badge">${vinile.stato}</span>
-        <button>Modifica</button>
-        <button>Elimina</button>
-        </div>` ;
-        lista.appendChild(card);
-    }) 
-}
+        card.innerHTML = `<div class="info">
 
+      <h3>${vinile.album}</h3>
+
+      <p>${vinile.artista} — ${vinile.anno}</p>
+
+    </div>
+
+    <div class="actions">
+
+      <span class="badge ${vinile.stato === "Acquistato"
+                ? "green"
+                : "gold"
+            }">
+      ${vinile.stato}
+      </span>
+
+      <button class="toggle"
+      data-id="${vinile.id}">
+      Cambia stato
+      </button>
+
+      <button class="modifica"
+      data-id="${vinile.id}">
+      Modifica
+      </button>
+
+      <button class="delete"
+      data-id="${vinile.id}">
+      Elimina
+      </button>
+    </div>`;
+        lista.appendChild(card);
+    });
+
+    //STATISTICHE
+    const acquistati = vinili.filter((v) =>
+        v.stato === "Acquistato").length;
+    const daAcquistare = vinili.filter((v) =>
+        v.stato === "Da acquistare").length;
+
+    const percentuale = (acquistati / vinili.length) * 100;
+    statistiche.innerHTML = `<div>
+    <div class="numero">${vinili.length}</div>
+    <p>Totale</p>
+    </div>
+    <div>
+    <div class="numero">${acquistati}</div>
+    <p>Acquistati</p>
+    </div>
+    <div>
+    <div class="numero">${daAcquistare}</div>
+    <p>Da acquistare</p>
+    </div>
+    
+    <div>
+    <p>PERCENTUALE ACQUISTATI</p>
+    <div class="barra">
+    <div class="riempimento" style="width:${percentuale}%"></div>
+    </div>
+    </div>`;
+
+}
 /* FORM CON VALIDAZIONE
    addEventListener("submit") sul form.
    event.preventDefault().
@@ -101,31 +178,29 @@ const render = () => {
 */
 
 /* SCRIVI QUI LA TUA RISPOSTA */
-form.addEventListener ("submit", (event) => {
+form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const titolo = document.getElementById("titolo").value.trim();
-    const autore = document.getElementById("autore").value.trim();
-    const anno = document.getElementById("anno").value.trim();
-    const stato = document.getElementById("stato").value;
+    const titolo = document.querySelector("#titolo").value.trim();
+    const autore = document.querySelector("#autore").value.trim();
+    const anno = document.querySelector("#anno").value.trim();
+    const stato = document.querySelector("#stato").value;
 
     if (!titolo || !autore || !anno) {
         alert("Compila tutti i campi");
         return;
     }
-    const newVinile = {
+    const nuovoVinile = {
         id: Date.now(),
         album: titolo,
         artista: autore,
         anno: Number(anno),
         stato: stato
     };
-    vinili.push(newVinile);
+    vinili.push(nuovoVinile);
     form.reset();
+    notifica("Vinile aggiunto")
     render();
 });
-
-render();
-
 /* INTERAZIONI BASE — eliminare, modificare, contare
    - Elimina: filter per id, render(). Event delegation sul container.
    - Modifica in-place: button "Modifica". Al click il testo diventa <input>,
@@ -134,8 +209,39 @@ render();
 */
 
 /* SCRIVI QUI LA TUA RISPOSTA */
+lista.addEventListener("click", (event) => {
+    const id = Number(event.target.dataset.id);
+    //ELIMINA
+    if (event.target.classList.contains("delete")) {
+        vinili = vinili.filter(vinile => vinile.id !== id);
+        notifica("Vinile eliminato")
+        render();
+    }
 
+    //MODIFICA
+    if (event.target.classList.contains("modifica")) {
+        const nuovoTitolo = prompt("Nuovo titolo");
+        if (!nuovoTitolo) return;
+        const vinile = vinili.find((v)=>
+        v.id===id);
+        vinile.album=nuovoTitolo;
+        notifica("Titolo modificato")
+        render();
+    }
 
+    //CAMBIO STATO
+    if (event.target.classList.contains("toggle")) {
+        const vinile=vinili.find ((v)=>
+        v.id===id
+    );
+    if (vinile.stato==="Acquistato") {
+        vinile.stato = "Da acquistare";
+    } else {
+        vinile.stato = "Acquistato";
+    }
+    render();
+    }
+});
 /* RICERCA, FILTRO, ORDINAMENTO
    - Ricerca live: <input> con event "input". Salva in stato e render().
    - Filtro: <select> con event "change". Salva in stato e render().
@@ -144,15 +250,36 @@ render();
 */
 
 /* SCRIVI QUI LA TUA RISPOSTA */
+search.addEventListener("input", (e)=> {
+    ricercaCorrente= e.target.value;
+    render();
+});
 
+//FILTER
+filter.addEventListener("change", (e) => {
+    filtroCorrente=e.target.value;
+    render();
+});
 
+//SORT
+sort.addEventListener("change", (e) => {
+    ordinamentoCorrente=e.target.value;
+    render();
+});
 /* NOTIFICHE TEMPORANEE
    Funzione notifica(testo) che imposta il testo del <div id="notifica">,
    lo mostra (display: block), poi dopo 3000ms (setTimeout) lo nasconde.
 */
 
 /* SCRIVI QUI LA TUA RISPOSTA */
-
+function notifica(testo) {
+    const div=document.querySelector('#notifica');
+    div.textContent=testo;
+    div.style.display='block';
+    setTimeout(()=> {
+        div.style.display = 'none';
+    }, 3000);
+}
 
 /* TEMA CHIARO/SCURO
    Un button che chiama document.body.classList.toggle("dark").
@@ -163,12 +290,13 @@ render();
 dark.addEventListener("click", function () {
     document.body.classList.toggle("darkMode");
     if (document.body.classList.contains("darkMode")) {
-        dark.textContent="Tema chiaro";
+        dark.textContent = "Tema chiaro";
     } else {
-        dark.textContent="Tema scuro";
+        dark.textContent = "Tema scuro";
     }
 });
 
+render()
 /* PERSISTENZA — localStorage (cerca tu su MDN)
    - In fondo a render(), salva lo stato:
        localStorage.setItem("dati", JSON.stringify(stato));

@@ -31,6 +31,12 @@ button {
 
 /* Notifica nascosta di default */
 #notifica {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #111;
+    color: white;
+    border-radius: 8px;
   display: none;
 }
 
@@ -78,10 +84,14 @@ body.darkMode .lista {
     margin: 40px auto;
 }
 
-.form {
+.form,
+.controlli,
+.statistiche,
+.lista {
     background-color: #e1e0e0;
     padding: 25px;
     border-radius: 10px;
+    margin-bottom: 25px;
 }
 
 .form h2 {
@@ -97,19 +107,19 @@ body.darkMode .lista {
     margin-bottom: 10px;
 }
 
-.form input:nth-of-type(1) {
+#titolo {
     width: 30%;
 }
 
-.form input:nth-of-type(2) {
+#autore {
     width: 30%;
 }
 
-.form input:nth-of-type(3) {
+#anno {
     width: 12%;
 }
 
-.form select {
+#stato {
     width: 23%;
 } 
 
@@ -132,15 +142,58 @@ body.darkMode .lista {
     margin-bottom: 15px;
     border-radius: 12px;
     background-color: white;
-    border-left: 6px solid;
+    border-left: 6px solid gold;
 }
 
-.prodotto h3 {
+.card.acquistato {
+    border-left-color: green;
+}
+
+.info h3 {
     margin-bottom: 5px;
 }
 
-.status {
+.actions {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+
+.badge.green {
+    background-color: lightgreen;
+}
+
+.badge.gold {
+    background-color: #ffe9a9;
+}
+
+.actions button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.statistiche {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.barra {
+    width: 400px;
+    height: 18px;
+    background-color: #ddd;
+    border-radius: 25px;
+}
+
+.riempimento {
+    height: 100%;
+    background-color: goldenrod;
 }

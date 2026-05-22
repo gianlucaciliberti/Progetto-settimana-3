@@ -13,8 +13,8 @@
     <header>
         <!-- Titolo dell'app + sottotitolo + button tema chiaro/scuro -->
         <div>
-            <h1>I miei vinili</h1>
-            <p>Lista di vinili che ho o che vorrei comprare</p>
+            <h1>La mia Vinylshelf</h1>
+            <p>Aggiungi i vinili che hai o che vorresti acquistare</p>
         </div>
         <button id="dark">Tema scuro</button>
 
@@ -24,22 +24,32 @@
 
         <section class="form">
             <!-- Form di inserimento di nuovi elementi -->
-             <h2>Aggiungi un vinile</h2>
-            <form>
-                <input type="text" id="titolo"placeholder="Album">
+            <h2>Aggiungi un vinile</h2>
+            <form id="viniliForm">
+                <input type="text" id="titolo" placeholder="Album">
                 <input type="text" id="autore" placeholder="Artista">
-                <input type="number" id ="anno" placeholder="Anno">
+                <input type="number" id="anno" placeholder="Anno">
                 <select id="stato">
                     <option>Da acquistare</option>
                     <option>Acquistato</option>
                 </select>
 
-                <button id="addButton">Aggiungi</button>
+                <button type="submit" id="addButton">Aggiungi</button>
             </form>
         </section>
 
         <section class="controlli">
             <!-- Ricerca live, filtro (select), ordinamento -->
+            <input type="text" id="search" placeholder="Cerca album o artista">
+            <select id="filter">
+                <option value="Tutti">Tutti</option>
+                <option value="Acquistato">Acquistati</option>
+                <option value="Da acquistare">Da acquistare</option>
+            </select>
+            <select id="sort">
+                <option value="titolo">Titolo A-Z</option>
+                <option value="anno">Anno crescente</option>
+            </select>
         </section>
 
         <section class="statistiche">
