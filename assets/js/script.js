@@ -113,9 +113,18 @@ form.addEventListener ("submit", (event) => {
         return;
     }
     const newVinile = {
-        id:
-    }
-})
+        id: Date.now(),
+        album: titolo,
+        artista: autore,
+        anno: Number(anno),
+        stato: stato
+    };
+    vinili.push(newVinile);
+    form.reset();
+    render();
+});
+
+render();
 
 /* INTERAZIONI BASE — eliminare, modificare, contare
    - Elimina: filter per id, render(). Event delegation sul container.
