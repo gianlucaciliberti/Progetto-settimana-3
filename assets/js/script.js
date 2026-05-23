@@ -169,7 +169,8 @@ const render = () => {
     v.stato==="Da acquistare").length;
     const percentuale = Math.round((acquistatiNumber/vinili.length)*100);
 
-    console.log(totale);
+    //console.log(totale); Test per trovare errore
+
     //Adesso aggiorno il DOM
     totale.textContent=vinili.length;
     acquistati.textContent=acquistatiNumber;
@@ -206,6 +207,7 @@ form.addEventListener("submit", (event) => {
         stato: stato
     };
     vinili.push(nuovoVinile);
+    notifica("Vinile aggiunto!") //Notifica specifica
     form.reset();
     render();
 });
@@ -224,6 +226,7 @@ lista.addEventListener("click", (event) => {
         const index = vinili.findIndex ((v)=>
         v.id===id);
         vinili.splice(index, 1);
+        notifica("Vinile eliminato!")
         render();
     }
     //MODIFICA
@@ -233,6 +236,7 @@ lista.addEventListener("click", (event) => {
         const vinile = vinili.find((v) =>
             v.id === id);
         vinile.album = nuovoTitolo;
+        notifica("Titolo vinile modificato!")
         render();
     }
 
@@ -279,7 +283,14 @@ sort.addEventListener("change", (e) => {
 */
 
 /* SCRIVI QUI LA TUA RISPOSTA */
-
+const notifica = (testo) => {
+    const notificaBox = document.querySelector ('#notifica');
+    notificaBox.textContent=testo;
+    notificaBox.style.display= "block";
+    setTimeout (() => {
+        notificaBox.style.display="none";
+    }, 3000);
+};
 
 /* TEMA CHIARO/SCURO
    Un button che chiama document.body.classList.toggle("dark").
