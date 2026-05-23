@@ -104,68 +104,77 @@ const render = () => {
             card.style.borderLeftColor = "green";
         } else {
             card.style.borderLeftColor = "gold";
+        };
+
+        //INFO
+        const info = document.createElement("div");
+        info.classList.add("info");
+        const titolo = document.createElement("h3");
+        titolo.textContent = vinile.album;
+        const artista = document.createElement("p");
+        artista.textContent = `${vinile.artista} - ${vinile.anno}`;
+        info.appendChild(titolo);
+        info.appendChild(artista);
+
+        //ACTIONS, BADGE, BUTTON
+        const actions=document.createElement("div");
+        actions.classList.add("actions")
+
+        const badge = document.createElement("span");
+        badge.classList.add("badge");
+        if (vinile.stato === "Acquistato") {
+            badge.classList.add("green");
+        } else {
+            badge.classList.add("gold");
         }
-        card.innerHTML = `<div class="info">
+        badge.textContent = vinile.stato;
 
-      <h3>${vinile.album}</h3>
+        const toggle = document.createElement("button");
+        toggle.classList.add("toggle");
+        toggle.dataset.id = vinile.id;
+        toggle.textContent = "Cambia stato";
 
-      <p>${vinile.artista} — ${vinile.anno}</p>
+        const modifica = document.createElement("button");
+        modifica.classList.add("modifica");
+        modifica.dataset.id = vinile.id;
+        modifica.textContent = "Modifica";
 
-    </div>
+        const deleteButton=document.createElement("button");
+        deleteButton.classList.add("delete");
+        deleteButton.dataset.id=vinile.id;
+        deleteButton.textContent="Elimina";
 
-    <div class="actions">
+        actions.appendChild(badge);
+        actions.appendChild(toggle);
+        actions.appendChild(modifica);
+        actions.appendChild(deleteButton);
 
-      <span class="badge ${vinile.stato === "Acquistato"
-                ? "green"
-                : "gold"
-            }">
-      ${vinile.stato}
-      </span>
+        card.appendChild(info);
+        card.appendChild(actions);
 
-      <button class="toggle"
-      data-id="${vinile.id}">
-      Cambia stato
-      </button>
-
-      <button class="modifica"
-      data-id="${vinile.id}">
-      Modifica
-      </button>
-
-      <button class="delete"
-      data-id="${vinile.id}">
-      Elimina
-      </button>
-    </div>`;
         lista.appendChild(card);
     });
 
     //STATISTICHE
-    const acquistati = vinili.filter((v) =>
-        v.stato === "Acquistato").length;
-    const daAcquistare = vinili.filter((v) =>
-        v.stato === "Da acquistare").length;
 
-    const percentuale = (acquistati / vinili.length) * 100;
-    statistiche.innerHTML = `<div>
-    <div class="numero">${vinili.length}</div>
-    <p>Totale</p>
-    </div>
-    <div>
-    <div class="numero">${acquistati}</div>
-    <p>Acquistati</p>
-    </div>
-    <div>
-    <div class="numero">${daAcquistare}</div>
-    <p>Da acquistare</p>
-    </div>
-    
-    <div>
-    <p>PERCENTUALE ACQUISTATI</p>
-    <div class="barra">
-    <div class="riempimento" style="width:${percentuale}%"></div>
-    </div>
-    </div>`;
+
+    const totale = statistiche.querySelector('#totale');
+    const acquistati=statistiche.querySelector('#acquistati');
+    const daAcquistare=statistiche.querySelector('#daAcquistare');
+    const barraPercentuale=statistiche.querySelector('#barraPercentuale');
+
+    const acquistatiNumber = vinili.filter((v) => 
+    v.stato==="Acquistato").length;
+    const daAcquistareNumber = vinili.filter((v)=>
+    v.stato==="Da acquistare").length;
+    const percentuale = Math.round((acquistatiNumber/vinili.length)*100);
+
+    console.log(totale);
+    //Adesso aggiorno il DOM
+    totale.textContent=vinili.length;
+    acquistati.textContent=acquistatiNumber;
+    daAcquistare.textContent=daAcquistareNumber;
+    barraPercentuale.style.width=percentuale+"%";
 
 }
 /* FORM CON VALIDAZIONE
@@ -198,7 +207,6 @@ form.addEventListener("submit", (event) => {
     };
     vinili.push(nuovoVinile);
     form.reset();
-    notifica("Vinile aggiunto")
     render();
 });
 /* INTERAZIONI BASE — eliminare, modificare, contare
@@ -213,33 +221,32 @@ lista.addEventListener("click", (event) => {
     const id = Number(event.target.dataset.id);
     //ELIMINA
     if (event.target.classList.contains("delete")) {
-        vinili = vinili.filter(vinile => vinile.id !== id);
-        notifica("Vinile eliminato")
+        const index = vinili.findIndex ((v)=>
+        v.id===id);
+        vinili.splice(index, 1);
         render();
     }
-
     //MODIFICA
     if (event.target.classList.contains("modifica")) {
         const nuovoTitolo = prompt("Nuovo titolo");
         if (!nuovoTitolo) return;
-        const vinile = vinili.find((v)=>
-        v.id===id);
-        vinile.album=nuovoTitolo;
-        notifica("Titolo modificato")
+        const vinile = vinili.find((v) =>
+            v.id === id);
+        vinile.album = nuovoTitolo;
         render();
     }
 
     //CAMBIO STATO
     if (event.target.classList.contains("toggle")) {
-        const vinile=vinili.find ((v)=>
-        v.id===id
-    );
-    if (vinile.stato==="Acquistato") {
-        vinile.stato = "Da acquistare";
-    } else {
-        vinile.stato = "Acquistato";
-    }
-    render();
+        const vinile = vinili.find((v) =>
+            v.id === id
+        );
+        if (vinile.stato === "Acquistato") {
+            vinile.stato = "Da acquistare";
+        } else {
+            vinile.stato = "Acquistato";
+        }
+        render();
     }
 });
 /* RICERCA, FILTRO, ORDINAMENTO
@@ -250,20 +257,20 @@ lista.addEventListener("click", (event) => {
 */
 
 /* SCRIVI QUI LA TUA RISPOSTA */
-search.addEventListener("input", (e)=> {
-    ricercaCorrente= e.target.value;
+search.addEventListener("input", (e) => {
+    ricercaCorrente = e.target.value;
     render();
 });
 
 //FILTER
 filter.addEventListener("change", (e) => {
-    filtroCorrente=e.target.value;
+    filtroCorrente = e.target.value;
     render();
 });
 
 //SORT
 sort.addEventListener("change", (e) => {
-    ordinamentoCorrente=e.target.value;
+    ordinamentoCorrente = e.target.value;
     render();
 });
 /* NOTIFICHE TEMPORANEE
@@ -272,14 +279,7 @@ sort.addEventListener("change", (e) => {
 */
 
 /* SCRIVI QUI LA TUA RISPOSTA */
-function notifica(testo) {
-    const div=document.querySelector('#notifica');
-    div.textContent=testo;
-    div.style.display='block';
-    setTimeout(()=> {
-        div.style.display = 'none';
-    }, 3000);
-}
+
 
 /* TEMA CHIARO/SCURO
    Un button che chiama document.body.classList.toggle("dark").
